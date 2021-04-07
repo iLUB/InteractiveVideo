@@ -23,7 +23,7 @@ questions_comments_sub_tab#:#Edit
 tutor#:#Tutor
 questions_comments#:#Questions, chapters and comments
 questions_comments_new#:#Questions, chapters, public comments
-sure_delete_comments#:#Are you sure you want to delete the selected comments?
+sure_delete_comments#:#Are you sure you want to delete the selected comments/questions/chapters?
 video_file#:#Video
 comment#:#Comment
 comments#:#Comments
@@ -31,9 +31,9 @@ switch_on#:#On
 switch_off#:#Off
 post#:#Post
 cancel#:#Cancel
-sure_delete_comment#:#Are you sure, you want to delete the selected comments?
+sure_delete_comment#:#Are you sure, you want to delete the selected comments/questions/chapters?
 missing_comment_text#:#Please enter a comment.
-missing_stopping_point#:#The stopping point was not trasnferred to the server. Please try again.
+missing_stopping_point#:#The stopping point was not transferred to the server. Please try again.
 invalid_comment_ids#:#Some comments could not be found.
 comments_successfully_deleted#:#The selected comments were deleted successfully.
 show_all_comments#:#Show all Comments:
@@ -100,7 +100,7 @@ already_answered#:#Question already answered.
 reflection#:#Reflective question
 answers#:#Answers
 sure_update_question#:#Are you sure, you want to save the question? Existing user results will be deleted! 
-question_type_info#:#You can choose between one of three avalibale quetsion types: a single choice, a multiple choice or a self-reflexion quertion. Self-reflexion questions do not have answer options and will be marked as "passed" once they have been shown to a user at least once.
+question_type_info#:#You can choose between one of three available question types: a single choice, a multiple choice or a self-reflexion quertion. Self-reflexion questions do not have answer options and will be marked as "passed" once they have been shown to a user at least once.
 is_jump_correct_info#:#In case the question was answered correctly, you can select a jump label (time stamp) within the video to which the user can jump using a button. This button will be shown along with the feedback text.
 is_jump_wrong_info#:#In case the question was answered incorrectly, you can select a jump label (time stamp) within the video to which the user can jump using a button. This button will be shown along with the feedback text.
 learning_recommendation#:#Learning recommendation within the video at
@@ -204,7 +204,7 @@ save_without_correct_detail#:#You don't have selected a reflection question or h
 is_table_of_content#:#Table of Content
 toc#:#Table of Content
 show_toc_first#:#Show Table of content first
-show_toc_first_info#:#Show table of content as first page
+show_toc_first_info#:#Show table of content as first page. In order to see such a table of content chapters have to be created (in the tab "Questions, chapters and comments")
 disable_comment_stream#:#Disable comment stream
 disable_comment_stream_info#:#Disable comment stream
 insert_chapter#:#Insert Chapter
@@ -213,3 +213,5 @@ comment_table_title#:#Comment / Question Text
 compulsory_question#:#Compulsory question
 compulsory#:#Compulsory
 compulsory_question_info#:#This question must be answered
+show_best_solution#:#Show best solution
+show_best_solution_info#:#Show best solution
