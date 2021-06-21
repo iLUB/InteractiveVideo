@@ -41,6 +41,7 @@ class SimpleChoiceQuestionAjaxHandler
 		$score    = $scoring->getScoreForQuestionOnUserId($qid);
 		$feedback = $scoring->getFeedbackByQuestionId($qid);
 		$json     = array();
+		$correct = false;
 		if(is_array($feedback))
 		{
 			if($feedback['neutral_answer'] != 1)
@@ -93,6 +94,7 @@ class SimpleChoiceQuestionAjaxHandler
 						$json['html']          = $start_div . $feedback['feedback_correct'] .'</div>';
 						$json['is_timed']      = $feedback['is_jump_correct'];
 						$json['time']          = $feedback['jump_correct_ts'];
+						$correct = true;
 					}
 				}
 				else
@@ -114,6 +116,7 @@ class SimpleChoiceQuestionAjaxHandler
 					$json['is_timed']      = $feedback['is_jump_correct'];
 					$json['time']          = $feedback['jump_correct_ts'];
 				}
+				$json['correct'] = $correct;
 			}
 
 		$json['html'] .= '<div style="padding-top:10px;"></div>';
@@ -137,11 +140,7 @@ class SimpleChoiceQuestionAjaxHandler
         $best_solution = '';
 	    $answers = $this->getAnswersForQuestionId($qid, false);
         foreach($answers as $answer) {
-            $class = 'wrong_answer';
-            if($answer['correct'] === "1") {
-                $class = 'correct_answer';
-            }
-            $best_solution .= '<div><span class="' . $class . '"></span><span class="best_solution_answer">' . $answer['answer'] . '</span></div>';
+            $best_solution .= '<div class="best_solution_answer" data-best-solution="'. $answer["answer_id"] .'" data-answer-state="'.$answer['correct'].'"></div>';
         }
         return $best_solution;
     }
@@ -201,9 +200,11 @@ class SimpleChoiceQuestionAjaxHandler
 		$res = $ilDB->queryF('
 			SELECT * 
 			FROM  rep_robj_xvid_question question, 
-				  rep_robj_xvid_qus_text answers 
+				  rep_robj_xvid_qus_text answers,
+				  rep_robj_xvid_comments comments 
 			WHERE question.comment_id = %s 
-			AND   question.question_id = answers.question_id',
+			AND   question.question_id = answers.question_id
+			AND   question.comment_id = comments.comment_id',
 			array('integer'), array((int)$cid)
 		);
 
@@ -232,6 +233,9 @@ class SimpleChoiceQuestionAjaxHandler
 			$show_reflection_question_comment = $row['reflection_question_comment'];
 			$question_image          = $row['question_image'];
 			$compulsory              = $row['compulsory_question'];
+			$time                    = $row['comment_time'];
+			$show_best_solution      = $row['show_best_solution'];
+			$show_best_solution_text = $row['show_best_solution_text'];
 			#$neutral_answer         = $row['neutral_answer'];
 			$counter++;
 		}
@@ -268,7 +272,10 @@ class SimpleChoiceQuestionAjaxHandler
 		$build_json['show_response_frequency'] = $show_response_frequency;
 		$build_json['reflection_question_comment'] = $show_reflection_question_comment;
 		$build_json['compulsory_question']     = $compulsory;
+		$build_json['show_best_solution']     = $show_best_solution;
+		$build_json['show_best_solution_text']     = $show_best_solution_text;
 		$build_json['repeat_question']         = $repeat_question;
+		$build_json['time']                    = $time;
 		if($question_image != null)
 		{
 			$build_json['question_image']          = ilWACSignedPath::signFile($question_image);

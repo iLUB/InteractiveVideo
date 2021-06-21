@@ -8,6 +8,7 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 					modal:                    '#ilQuestionModal',
 					question_form:            '#question_form',
 					close_form:               '#close_form',
+					send_form:                '#sendForm',
 					time_string:              '#jumpToTimeInVideo',
 					answer_part:              '#answer_',
 					private_modal:            '#is_private_modal_',
@@ -17,30 +18,39 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 					modal_body:     '.modal-body',
 					modal_title:    '.modal-title',
 					modal_feedback: '.modal_feedback',
-					modal_close:    '.close'
+					modal_close:    '.close',
+					modal_content:  '.modal-content'
 				},
 			};
 
 	pub.QuestionObject = {};
 
+	pro.cleanModal = function() {
+		$('.modal-title').html('');
+		$('.modal-body').html('');
+		$('#question_buttons_bellow_form').remove();
+		$('.modal_feedback').remove();
+	}
+
 	pub.getQuestionPerAjax = function (comment_id, player) {
-		if(pro.isQuestionLockEnabled() && $(pri.ids.modal).css('display') === 'none'){
+		pro.cleanModal();
+		if(pro.isQuestionLockEnabled() && $(pri.ids.modal).css('display') === 'none') {
 				pro.removeQuestionLock();
 		}
 
-			let player_data = il.InteractiveVideoPlayerFunction.getPlayerDataObjectByPlayer(player);
+		let player_data = il.InteractiveVideoPlayerFunction.getPlayerDataObjectByPlayer(player);
 
-			$.when(
-					$.ajax({
-						url:  player_data.question_get_url + '&comment_id=' + comment_id,
-						type: 'GET', dataType: 'json'
-					})
-			).then(function (array) {
-				if(pro.isQuestionLockDisabled()) {
-					pro.enableQuestionLock();
-					pro.showQuestionInteractionForm(comment_id, array, player);
-				}
-			});
+		$.when(
+				$.ajax({
+					url:  player_data.question_get_url + '&comment_id=' + comment_id,
+					type: 'GET', dataType: 'json'
+				})
+		).then(function (array) {
+			if(pro.isQuestionLockDisabled()) {
+				pro.enableQuestionLock();
+				pro.showQuestionInteractionForm(comment_id, array, player);
+			}
+		});
 	};
 
 	pub.toggleCloseButtons = function(show) {
@@ -77,7 +87,7 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 
 		if(pub.QuestionObject.question_image)
 		{
-			img = '<div class="question_image_container"><img class="question_image" src="' + pub.QuestionObject.question_image+ '"/></div>';
+			img = '<div class="question_image_container"><img class="question_image" src="' + pub.QuestionObject.question_image + '"/></div>';
 		}
 
 		modal.append(img + '<div class="question_center"><p>' + pub.QuestionObject.question_text + '</p></div>');
@@ -115,28 +125,27 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 
 	pro.addAnswerPossibilities = function(input_type) {
 		let html = '';
-
-		html = '<form id="question_form">';
+		$('#question_buttons_bellow_form').remove()
+		html = '<div class="question_flex_div"><form id="question_form">';
 		$.each(pub.QuestionObject.answers, function (l, value) {
 			html += pro.buildAnswerInputElement(input_type, value);
 		});
 		html += '<input name="qid" value ="' + pub.QuestionObject.question_id + '" type="hidden"/>';
 		html += '<div id="question_buttons_bellow_form"></div>';
-		html += '</form>';
+		html += '</form></div>';
 		$(pri.classes.modal_body).append(html);
 	};
 
 	pro.buildAnswerInputElement = function(input_type, value)
 	{
-		return  '<label for="answer_'   + value.answer_id + '">' +
+		return  '<label for="answer_'   + value.answer_id + '" class="answer_label">' +
 			'<input' +
 			' id="answer_'  + value.answer_id + '" name="answer[]"' +
 			' value="'      + value.answer_id + '"' +
 			' type="'       + input_type + '">' +
 			value.answer +
 			'</label>' + 
-			'<div class="progress rf_listener response_frequency_' + value.answer_id + ' ilNoDisplay"></div>' +
-			'<br/>';
+			'<div class="progress rf_listener response_frequency_' + value.answer_id + ' ilNoDisplay"></div>';
 	};
 
 	pro.addSelfReflectionLayout = function(player) {
@@ -164,13 +173,15 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 	
 	pro.appendSelfReflectionCommentForm = function(player_id)
 	{
-		//Todo: check this
 		let comment_id = 'text_reflection_comment_'+ pub.comment_id ;
 		let footer = $('.modal_reflection_footer');
 		let feedback = $(pri.classes.modal_feedback);
 		let language = scope.InteractiveVideo.lang;
+		let html = '<div id="question_reflection_buttons_bellow_form"></div>';
+		$(pri.classes.modal_body).append(html);
 
-		footer.prepend(pro.createButtonButtons('submit_comment_form_' + player_id, language.save, 'submit_comment_form'));
+		$('#question_reflection_buttons_bellow_form').prepend(pro.createButtonButtons('submit_comment_form_' + player_id, language.save, 'submit_comment_form'));
+		$('#question_reflection_buttons_bellow_form').prepend($(pri.ids.close_form));
 		footer.prepend('<input type="checkbox" name="is_private_modal" value="1" id="is_private_modal_' + player_id + '"/> ' + language.private_text);
 		feedback.prepend('<textarea id="'+comment_id+'">' + pub.QuestionObject.reply_to_txt + '</textarea>');
 		if(pub.QuestionObject.reply_to_private == '1')
@@ -193,15 +204,17 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 	};
 
 	pro.addFeedbackDiv = function() {
-		$(pri.ids.question_form).after('<div class="modal_feedback"></div>');
+		$('.modal_feedback').remove()
+		$(pri.classes.modal_body).after('<div class="modal_feedback"></div>');
 	};
 
 	pro.addButtons = function(player) {
 		let question_form = $(pri.ids.question_btns_below_form);
+		$('.question_action_btn').remove()
 		let language = scope.InteractiveVideo.lang;
 
-		question_form.append(pro.createButtonButtons('sendForm', language.send_text, ''));
-		question_form.append(pro.createButtonButtons('close_form', language.close_text, '', 'button'));
+		question_form.append(pro.createButtonButtons('close_form', language.close_text, 'question_action_btn', 'button'));
+		question_form.append(pro.createButtonButtons('sendForm', language.send_text, 'question_action_btn'));
 		pro.appendButtonListener(player);
 	};
 
@@ -209,7 +222,7 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 		let modal = $(pri.classes.modal_feedback);
 		let language = scope.InteractiveVideo.lang;
 		let player_id = scope.InteractiveVideoPlayerFunction.getPlayerIdFromPlayerObject(player);
-
+		$(pri.classes.modal_content).append($('#question_buttons_bellow_form'))
 		modal.html('');
 		pro.showResponseFrequency(feedback.response_frequency);
 		modal.html(feedback.html);
@@ -229,15 +242,78 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 		}
 
 		$('.iv_best_solution_value').html(feedback.best_solution);
-		$('#show_best_solution').val('Show best solution');
-		$('.iv_show_best_solution').off('click');
-		$('.iv_show_best_solution').on('click', function () {
-			$('.iv_best_solution_hidden').removeClass('iv_best_solution_hidden');
-			$('#sendForm').remove()
-			$('#question_form input').prop( "disabled", true )
-			$('#close_form').prop( "disabled", false )
-		});
+		$('#question_buttons_bellow_form').append($('#show_best_solution'))
+		$('#show_best_solution').val(il.InteractiveVideo["lang"].show_best_solution);
+		$('#show_best_solution').hide();
+		if(feedback.correct != true) {
+			$('#show_best_solution').show();
+			$('#show_best_solution').off('click');
+			$('#show_best_solution').on('click', function () {
+				$('.iv_best_solution_hidden').removeClass('iv_best_solution_hidden');
+				pro.sortAppendBestSolution();
+				$('#sendForm').remove()
+				$('#question_form input').prop( "disabled", true )
+				$('#close_form').prop( "disabled", false )
+				pro.showBestSolutionIsClicked(player_id)
+			});
+		}
+
 	};
+
+	pro.showBestSolutionIsClicked = function(player_id) {
+		$('#show_best_solution').prop("disabled", true)
+		if(pub.QuestionObject.limit_attempts === "0"){
+			$('#question_buttons_bellow_form').append(pro.createButtonButtons('repeat_question', scope.InteractiveVideo.lang.repeat, 'question_repeat_btn', 'button'))
+			$('.question_repeat_btn').off('click');
+			$('.question_repeat_btn').on('click', function () {
+				let time = parseInt(pub.QuestionObject.time, 10);
+
+				$(pri.ids.modal).modal('hide');
+				il.InteractiveVideoPlayerAbstract.jumpToTimeInVideo(time - 1, player_id);
+			});
+		}
+	}
+
+	pub.showBestSolutionForReflectionIsClicked = function(player_id) {
+		$('#show_best_solution').prop("disabled", true)
+		if(pub.QuestionObject.limit_attempts === "0"){
+			$('#question_reflection_buttons_bellow_form').append(pro.createButtonButtons('repeat_question', scope.InteractiveVideo.lang.repeat, 'question_repeat_btn', 'button'))
+			$('#repeat_question').off('click');
+			$('#repeat_question').on('click', function () {
+				let time = parseInt(pub.QuestionObject.time, 10);
+
+				$(pri.ids.modal).modal('hide');
+				il.InteractiveVideoPlayerAbstract.jumpToTimeInVideo(time - 1, player_id);
+			});
+		}
+	}
+
+	pro.sortAppendBestSolution = function()
+	{
+		$('.best_solution_block').remove()
+		$('.best_solution_answer_view').remove();
+		$.each($('.best_solution_answer'), function (key, object) {
+			let question_type = pub.QuestionObject.type;
+			let answer_id = parseInt($(object).data('best-solution'), 10);
+			let answer_state = parseInt($(object).data('answer-state'), 10);
+			if(question_type === "0"){
+				let element = '<div class="best_solution_answer_view"><input type="radio" disabled=""></div>'
+				if(answer_state === 1) {
+					element = '<div class="best_solution_answer_view"><input type="radio" disabled="" checked="checked"></div>'
+				}
+				$( element).prependTo($('#answer_' + answer_id).parent())
+			} else if (question_type === "1"){
+				let element = '<div class="best_solution_answer_view"><input type="checkbox" disabled=""></div>'
+				if(answer_state === 1) {
+					element = '<div class="best_solution_answer_view"><input type="checkbox" disabled="" checked="checked"></div>'
+				}
+				$( element).prependTo($('#answer_' + answer_id).parent())
+			}
+
+		});
+
+		$('.question_flex_div').prepend($('<div class="best_solution_block">' + il.InteractiveVideo["lang"].solution + ': </div>'))
+	}
 
 	pro.showResponseFrequency = function(response_frequency) 
 	{
@@ -265,24 +341,26 @@ il.InteractiveVideoQuestionViewer = (function (scope) {
 		let player_data = il.InteractiveVideoPlayerFunction.getPlayerDataObjectByPlayer(player);
 		let player_id = il.InteractiveVideoPlayerFunction.getPlayerIdFromPlayerObject(player);
 
-		$(pri.ids.question_form).on('submit', function (e) {
-			console.log('hello',e)
+		$(pri.ids.send_form).off('click')
+		$(pri.ids.send_form).on('click', function (e) {
 			e.preventDefault();
 			$.ajax({
 				type:    "POST",
 				cache:   false,
 				url:     player_data.question_post_url,
-				data:    $(this).serialize(),
+				data:    $(pri.ids.question_form).serialize(),
 				success: function (feedback) {
 					let obj = JSON.parse(feedback);
 					let question_id = pub.QuestionObject.question_id;
 					if(question_id in il.InteractiveVideo[player_id].compulsoryQuestions) {
 						il.InteractiveVideo[player_id].compulsoryQuestions[question_id].answered = true;
 					}
+					$('#show_best_solution').remove();
 					pro.showFeedback(obj, player);
 					pro.addToLocalIgnoreArrayIfNonRepeatable(player_id);
 					pub.toggleCloseButtons(false);
 					pro.disableInteractionsIfLimitAttemptsIsActivated(player_id);
+
 				}
 			});
 		});

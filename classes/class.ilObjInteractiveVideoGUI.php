@@ -518,6 +518,8 @@ class ilObjInteractiveVideoGUI extends ilObjectPluginGUI implements ilDesktopIte
 		$config_tpl->setVariable('FEEDBACK_JUMP_TEXT', $plugin->txt('feedback_jump_text'));
 		$config_tpl->setVariable('LEARNING_RECOMMENDATION_TEXT', $plugin->txt('learning_recommendation'));
 		$config_tpl->setVariable('MORE_INFORMATION_TEXT', $plugin->txt('more_informations'));
+		$config_tpl->setVariable('SOLUTION_TEXT', $plugin->txt('solution'));
+		$config_tpl->setVariable('REPEAT_TEXT', $plugin->txt('repeat'));
 		$config_tpl->setVariable('ALREADY_ANSWERED_TEXT', $plugin->txt('already_answered'));
 		$config_tpl->setVariable('COMPULSORY', $plugin->txt('compulsory_question'));
 		$config_tpl->setVariable('QUESTION_TEXT', $plugin->txt('question'));
@@ -2356,13 +2358,18 @@ class ilObjInteractiveVideoGUI extends ilObjectPluginGUI implements ilDesktopIte
 		$this->appendRepositorySelector($feedback_one_wrong, 'feedback_wrong_obj');
 		$form->addItem($feedback_one_wrong);
 
+        $show_best_solution = new ilCheckboxInputGUI($plugin->txt('show_best_solution'), 'show_best_solution');
+        $show_best_solution->setInfo($plugin->txt('show_best_solution_info'));
+
+        $show_best_solution_text = xvidUtils::constructTextAreaFormElement('show_best_solution_text', 'show_best_solution_text');
+        $show_best_solution_text->setInfo($plugin->txt('show_best_solution_text_info'));
+        $show_best_solution->addSubItem($show_best_solution_text);
+
+        $form->addItem($show_best_solution);
+
 		$show_response_frequency = new ilCheckboxInputGUI($plugin->txt('show_response_frequency'), 'show_response_frequency');
 		$show_response_frequency->setInfo($plugin->txt('show_response_frequency_info'));
 		$form->addItem($show_response_frequency);
-
-        $show_best_solution = new ilCheckboxInputGUI($plugin->txt('show_best_solution'), 'show_best_solution');
-        $show_best_solution->setInfo($plugin->txt('show_best_solution_info'));
-        $form->addItem($show_best_solution);
 
 		$show_comment_field = new ilCheckboxInputGUI($plugin->txt('show_comment_field'), 'show_comment_field');
 		$show_comment_field->setInfo($plugin->txt('show_comment_field_info'));
@@ -2555,6 +2562,7 @@ class ilObjInteractiveVideoGUI extends ilObjectPluginGUI implements ilDesktopIte
 		$values['feedback_one_wrong']		= $question_data['question_data']['feedback_one_wrong'];
 		$values['show_response_frequency']	= $question_data['question_data']['show_response_frequency'];
 		$values['show_best_solution']	    = $question_data['question_data']['show_best_solution'];
+		$values['show_best_solution_text']  = $question_data['question_data']['show_best_solution_text'];
 		$values['is_jump_wrong']			= $question_data['question_data']['is_jump_wrong'];
 		$values['show_wrong_icon']			= $question_data['question_data']['show_wrong_icon'];
 		$values['jump_wrong_ts']			= $question_data['question_data']['jump_wrong_ts'];
@@ -2696,6 +2704,7 @@ class ilObjInteractiveVideoGUI extends ilObjectPluginGUI implements ilDesktopIte
 
 		$question->setShowResponseFrequency((int)$form->getInput('show_response_frequency'));
 		$question->setShowBestSolution((int)$form->getInput('show_best_solution'));
+		$question->setShowBestSolutionText(ilUtil::stripSlashes($form->getInput('show_best_solution_text')));
 		$question->setRepeatQuestion((int)$form->getInput('repeat_question'));
 		$question->setCompulsoryQuestion((int)$form->getInput('compulsory_question'));
 		$question->setReflectionQuestionComment((int)$form->getInput('show_comment_field'));

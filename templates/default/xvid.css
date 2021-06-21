@@ -131,6 +131,8 @@
 .modal_feedback{
     margin: 5px 0px 5px 0px;
     padding: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
 
 }
 
@@ -182,11 +184,6 @@
     opacity: 0.4;
     vertical-align: -10px;
 }
-#close_form{
-    right: 5px;
-    bottom: 5px;
-    position: absolute;
-}
 .align_button{
     width: 100%;
     text-align:center;
@@ -235,7 +232,7 @@
 }
 #question_form{
     margin: auto;
-    width: 50%;
+    flex:5
 }
 
 
@@ -266,9 +263,10 @@
     background-color: #b5eab2!important;
 }
 .rf_listener{
-    width: 100%;
+    width: 95%;
     height:20px !important;
     padding: 1px;
+    margin-left: 20px;
 }
 .interativeVideoNavHeader{
     padding-top:6px;
@@ -319,9 +317,7 @@
 }
 
 .submit_comment_form{
-    right: 85px;
-    bottom: 5px;
-    position: absolute;
+
 }
 .reply_comment{
     padding:0;
@@ -397,13 +393,9 @@ body.cke_editable{
 }
 .question_center{
     text-align:center;
+    padding-bottom: 30px;
 }
 
-#sendForm{
-    left: 5px;
-    bottom: 5px;
-    position: absolute;
-}
 .question_warning_buttons{
     text-align:center;
 }
@@ -558,5 +550,62 @@ li.toc_item > div > h5 > time {
 }
 
 .best_solution_answer{
-    padding-left: 5px;
+    padding-right: 5px;
+    float:left;
+}
+.best_solution_answer_view, .best_solution_block{
+    background-color: #bde0ff;
+}
+.iv_show_best_solution_reflection{
+    background-color: #bde0ff;
+    padding: 5px;
+}
+.reflection_best_solution_title{
+    font-weight: bolder;
+}
+.best_solution_answer_view {
+ margin-bottom: -10px;
+}
+
+.best_solution_block{
+    flex: 1;
+    margin-bottom: -5px;
+    padding: 5px;
+    margin-top: -30px;
+    margin-right: -18px;
+    font-weight: bolder;
+}
+
+.question_flex_div{
+    display: flex;
+}
+.answer_label {
+    display: flex;
+}
+.answer_label input:nth-child(2)  {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#question_buttons_bellow_form{
+    float: right;
+    margin-bottom: -20px;
+    background-color: white;
+    height: 27px;
+    width: 100%;
+}
+#question_reflection_buttons_bellow_form{
+    background-color: white;
+    height: 27px;
+    width: 100%;
+}
+#sendForm, #close_form, .submit_comment_form{
+    float:right;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+#show_best_solution, .question_repeat_btn{
+    margin-left: 5px;
+}
+.checkbox-inline #show_best_solution{
+    margin-left: -20px !important;
 }
