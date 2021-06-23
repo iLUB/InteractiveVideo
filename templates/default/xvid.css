@@ -554,14 +554,17 @@ li.toc_item > div > h5 > time {
     float:left;
 }
 .best_solution_answer_view, .best_solution_block{
-    background-color: #bde0ff;
+    background-color: #d2dce9;
 }
 .iv_show_best_solution_reflection{
-    background-color: #bde0ff;
+    background-color: #d2dce9;
     padding: 5px;
 }
 .reflection_best_solution_title{
-    font-weight: bolder;
+
+}
+.reflection_best_solution_text{
+    text-align: left;
 }
 .best_solution_answer_view {
  margin-bottom: -10px;
@@ -573,7 +576,6 @@ li.toc_item > div > h5 > time {
     padding: 5px;
     margin-top: -30px;
     margin-right: -18px;
-    font-weight: bolder;
 }
 
 .question_flex_div{
@@ -588,10 +590,12 @@ li.toc_item > div > h5 > time {
 }
 #question_buttons_bellow_form{
     float: right;
-    margin-bottom: -20px;
     background-color: white;
     height: 27px;
     width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 40px;
 }
 #question_reflection_buttons_bellow_form{
     background-color: white;
@@ -608,4 +612,13 @@ li.toc_item > div > h5 > time {
 }
 .checkbox-inline #show_best_solution{
     margin-left: -20px !important;
+}
+
+.modal_alert{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.question_center p {
+    text-align: left;
 }
